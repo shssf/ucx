@@ -79,6 +79,28 @@ typedef struct uct_ep_addr       uct_ep_addr_t;
  * @}
  */
 
+
+/**
+ * @ingroup UCT_RESOURCE
+ * @brief Structure for scatter-gather I/O.
+ *
+ * Specifies a list of buffers which can be used within a single data transfer
+ * function call.
+ *
+ * @note If the @a length is zero, the @a buffer will not be touched.
+ *       If the @a length greater than zero, the @a buffer must contain valid
+ *       pointer and @a count must be greater than zero.
+ *
+ */
+typedef struct uct_iov {
+    void     *buffer;   /**< Data buffer */
+    size_t    length;   /**< Length of data */
+    uct_mem_h memh;     /**< Local memory key descriptor for the data */
+    size_t    stride;   /**< Stride of the elements in the buffer */
+    unsigned  count;    /**< Number of elements in the buffer */
+} uct_iov_t;
+
+
 /**
  * @ingroup UCT_AM
  * @brief Callback to process incoming active message

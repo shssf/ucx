@@ -79,6 +79,10 @@ public:
 
         ucs_status_t status = UCS_OK;
         ssize_t packed_len;
+        uct_iov_t iov[1];
+        iov[0].memh   = memh;
+        iov[0].buffer = buffer;
+        iov[0].length = length;
         do {
             switch (op) {
             case OP_PUT_SHORT:
@@ -93,7 +97,7 @@ public:
                 status = (packed_len >= 0) ? UCS_OK : (ucs_status_t)packed_len;
                 break;
             case OP_PUT_ZCOPY:
-                status = uct_ep_put_zcopy(sender_ep(), buffer, length, memh,
+                status = uct_ep_put_zcopy(sender_ep(), iov, 1,
                                           remote_addr, rkey, NULL);
                 break;
             case OP_AM_SHORT:
@@ -106,8 +110,9 @@ public:
                 status = (packed_len >= 0) ? UCS_OK : (ucs_status_t)packed_len;
                 break;
             case OP_AM_ZCOPY:
+                iov[0].length = 1;
                 status = uct_ep_am_zcopy(sender_ep(), am_id, buffer, length,
-                                         buffer, 1, memh, NULL);
+                                         iov, 1, NULL);
                 break;
             }
         } while (status == UCS_ERR_NO_RESOURCE);

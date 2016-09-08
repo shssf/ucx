@@ -41,9 +41,12 @@ public:
     ucs_status_t put_zcopy(uct_ep_h ep, const mapped_buffer &sendbuf,
                            const mapped_buffer &recvbuf)
     {
-        return uct_ep_put_zcopy(ep,
-                                sendbuf.ptr(), sendbuf.length(), sendbuf.memh(),
-                                recvbuf.addr(), recvbuf.rkey(), comp());
+        uct_iov_t iov[1];
+        iov[0].buffer = sendbuf.ptr();
+        iov[0].length = sendbuf.length();
+        iov[0].memh   = sendbuf.memh();
+
+        return uct_ep_put_zcopy(ep, iov, 1, recvbuf.addr(), recvbuf.rkey(), comp());
     }
 
     ucs_status_t get_bcopy(uct_ep_h ep, const mapped_buffer &sendbuf,
@@ -57,9 +60,12 @@ public:
     ucs_status_t get_zcopy(uct_ep_h ep, const mapped_buffer &sendbuf,
                            const mapped_buffer &recvbuf)
     {
-        return uct_ep_get_zcopy(ep,
-                                sendbuf.ptr(), sendbuf.length(), sendbuf.memh(),
-                                recvbuf.addr(), recvbuf.rkey(), comp());
+        uct_iov_t iov[1];
+        iov[0].buffer = sendbuf.ptr();
+        iov[0].length = sendbuf.length();
+        iov[0].memh   = sendbuf.memh();
+
+        return uct_ep_get_zcopy(ep, iov, 1, recvbuf.addr(), recvbuf.rkey(), comp());
     }
 
     virtual void test_xfer(send_func_t send, size_t length, direction_t direction) {
